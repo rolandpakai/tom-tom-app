@@ -18,6 +18,7 @@ const App = () => {
   const [map, setMap] = useState({});
   const [longitude, setLongitude] = useState(-0.112869);
   const [latitude, setLatitude] = useState(51.504);
+  const [zoom, setZoom] = useState(14); 
 
   useEffect(() => {
     const origin = {
@@ -33,7 +34,7 @@ const App = () => {
         trafficFlow: true,
       },
       center: [longitude, latitude],
-      zoom: 14
+      zoom: zoom
     });
 
     new TTZoomControls({
@@ -79,9 +80,11 @@ const App = () => {
     marker.togglePopup();
     marker.on('dragend', () => {
       const lngLat = marker.getLngLat();
+      const mapzoom = map.getZoom();
       setLongitude(lngLat.lng);
       setLatitude(lngLat.lat);
-    })
+      setZoom(mapzoom);
+    });
 
     const myRouter = Router({map, origin});
 
@@ -90,7 +93,7 @@ const App = () => {
     })
 
     return () => map.remove()
-  }, [longitude, latitude])
+  }, [longitude, latitude, zoom])
 
   return (
     <>
