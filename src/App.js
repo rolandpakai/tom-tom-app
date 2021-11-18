@@ -94,9 +94,16 @@ const App = () => {
         lat: 47.497913
       };
 
-      setZoom(8); 
       myRouter.resetRoute();
       myRouter.newDeliveryRoute(customLocation);
+      map.setZoom(4);
+
+      const currentCenter = map.getCenter();
+
+      const newLng = (customLocation.lng + currentCenter.lng) / 2;
+      const newLat = (customLocation.lat + currentCenter.lat) / 2;
+
+      map.setCenter([newLng, newLat]);
     })
 
     const myRouter = Router({map, origin});
