@@ -3,6 +3,8 @@ import * as tt from '@tomtom-international/web-sdk-maps';
 import Router from './Router';
 import TTZoomControls from './TTZoomControls';
 import TTPanControls from './TTPanControls';
+import MarkerPopup from './MarkerPopup';
+import Marker from './Marker';
 import './App.css';
 import '@tomtom-international/web-sdk-maps/dist/maps.css'
 import '@tomtom-international/web-sdk-plugin-zoomcontrols/dist/ZoomControls.css'
@@ -54,35 +56,32 @@ const App = () => {
 
     setMap(map);
 
-    const addMarker = () => {
-      const popupOffset = {
-        bottom: [0, -25]
-      }
-      const popup = new tt.Popup({
-        offset: popupOffset
-      }).setHTML('You are Here!');
+    const popupOffset = {
+      bottom: [0, -25]
+    };
 
-      const element = document.createElement('div');
-      element.className = 'marker';
+    const html = 'SEGA';
 
-      const marker = new tt.Marker({
-        draggable: true,
-        element: element,
-      })
-      .setLngLat([longitude, latitude])
-      .addTo(map);
+    const markerPopup = new MarkerPopup({
+     'options': {
+      offset: popupOffset
+    },
+    'html': html
+    });
 
-      marker.on('dragend', () => {
-        const lngLat = marker.getLngLat();
-        setLongitude(lngLat.lng);
-        setLatitude(lngLat.lat);
-      })
+    const marker = new Marker({
+      map: map,
+      longitude: longitude,
+      latitude: latitude,
+    });
 
-      marker.setPopup(popup).togglePopup();
-
-    }
-
-    addMarker();
+    marker.setPopup(markerPopup);
+    marker.togglePopup();
+    marker.on('dragend', () => {
+      const lngLat = marker.getLngLat();
+      setLongitude(lngLat.lng);
+      setLatitude(lngLat.lat);
+    })
 
     const myRouter = Router({map, origin});
 
