@@ -4,6 +4,7 @@ import * as ttapi from '@tomtom-international/web-sdk-services';
 const Router = ({map, origin}) => {
 
     const destinations = [];
+    const markers = [];
 
     const convertToPoints = (lngLat) => {
         return {
@@ -18,11 +19,13 @@ const Router = ({map, origin}) => {
         const element = document.createElement('div');
         element.className = 'marker-delivery';
     
-        new tt.Marker({
+        const deliveryMarker = new tt.Marker({
           element: element
-        })
-        .setLngLat(lngLat)
-        .addTo(map);
+        });
+        deliveryMarker.setLngLat(lngLat)
+        deliveryMarker.addTo(map);
+
+        markers.push(deliveryMarker);
     }
 
     const sortDestinations = (locations) => {
@@ -62,10 +65,7 @@ const Router = ({map, origin}) => {
     }
 
     const drawRoute = (geoJson) => {
-        if (map.getLayer('route')) {
-          map.removeLayer('route');
-          map.removeSource('route');
-        }
+        removeRoute();
     
         map.addLayer({
           id: 'route',
@@ -99,11 +99,26 @@ const Router = ({map, origin}) => {
     const newDeliveryRoute = (lngLat) => {
         destinations.push(lngLat);
         addDeliveryMarker(lngLat);
-        recalculateRoutes();
+        
+        return recalculateRoutes();
+    }
+
+    const removeRoute = () => {
+      if (map.getLayer('route')) {
+        map.removeLayer('route');
+        map.removeSource('route');
+      }
+    }
+
+    const resetRoute = () => {
+      destinations.splice(0, destinations.length);
+      removeRoute();
+      markers.forEach(marker => marker.remove());
     }
 
     return {
         newDeliveryRoute: newDeliveryRoute,
+        resetRoute: resetRoute,
     }
 
 }

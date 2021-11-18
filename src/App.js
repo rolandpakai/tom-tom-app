@@ -61,7 +61,7 @@ const App = () => {
       bottom: [0, -25]
     };
 
-    const html = 'SEGA';
+    const html = 'Travel to <a id="newdestination" href="#">BP</a>';
 
     const markerPopup = new MarkerPopup({
      'options': {
@@ -85,6 +85,19 @@ const App = () => {
       setLatitude(lngLat.lat);
       setZoom(mapzoom);
     });
+
+    const newDestinationButton = document.getElementById('newdestination');
+        
+    newDestinationButton.addEventListener('click', (e) => {
+      const customLocation = {
+        lng: 19.040236,
+        lat: 47.497913
+      };
+
+      setZoom(8); 
+      myRouter.resetRoute();
+      myRouter.newDeliveryRoute(customLocation);
+    })
 
     const myRouter = Router({map, origin});
 
